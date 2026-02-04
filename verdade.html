@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>✨</title>
+
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#1b1f3a;
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --accent: rgba(255, 210, 120, .95);
+    }
+
+    *{ box-sizing:border-box }
+    html, body{ height:100% }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: url("images/mexi.jpg") center / cover no-repeat fixed;
+      overflow:hidden;
+      position: relative;
+    }
+
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(900px 600px at 20% 20%, rgba(43,47,102,.45) 0%, transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(90,47,93,.35) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(11,16,32,.65), rgba(27,31,58,.55));
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .screen, header, .teleprompter{ position: relative; z-index: 1; }
+
+    .stars{
+      position:fixed; inset:0;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.35) 40%, transparent 42%),
+        radial-gradient(1.5px 1.5px at 140px 90px, rgba(255,255,255,.25) 40%, transparent 42%),
+        radial-gradient(1.8px 1.8px at 320px 150px, rgba(255,255,255,.2) 40%, transparent 42%),
+        radial-gradient(1.2px 1.2px at 520px 60px, rgba(255,255,255,.18) 40%, transparent 42%),
+        radial-gradient(1.6px 1.6px at 760px 180px, rgba(255,255,255,.22) 40%, transparent 42%),
+        radial-gradient(1.2px 1.2px at 940px 110px, rgba(255,255,255,.18) 40%, transparent 42%);
+      background-size: 1000px 220px;
+      opacity:.55;
+      animation: drift 16s linear infinite;
+      pointer-events:none;
+      filter: blur(.15px);
+    }
+    @keyframes drift { from {transform:translateY(0)} to {transform:translateY(220px)} }
+
+    .screen{
+      height: 100dvh;
+      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    header{
+      flex: 0 0 auto;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    h1{ margin:0; font-size: 18px; line-height: 1.2; letter-spacing:.2px; }
+
+    .sub{
+      margin-top:6px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .pill{
+      padding:6px 10px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+    }
+
+    .controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      color:var(--text);
+      padding:12px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size: 14px;
+      min-height:44px;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .range{
+      flex:1;
+      min-width: 220px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      border-radius:14px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:44px;
+    }
+    input[type="range"]{ width:100%; accent-color: rgba(255,255,255,.85); }
+
+    .teleprompter{
+      position:relative;
+      flex: 1 1 auto;
+      min-height:0;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:22px;
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset;
+      touch-action: manipulation;
+    }
+
+    .viewport{ position:absolute; inset:0; overflow:hidden; padding: 22px 18px; }
+
+    .fadeTop, .fadeBottom{
+      position:absolute; left:0; right:0; height:56px;
+      pointer-events:none;
+      z-index:2;
+    }
+    .fadeTop{ top:0; background: linear-gradient(180deg, rgba(0,0,0,.70), rgba(0,0,0,0)); }
+    .fadeBottom{ bottom:0; background: linear-gradient(0deg, rgba(0,0,0,.70), rgba(0,0,0,0)); }
+
+    .scrollArea{
+      position:absolute;
+      left:0;
+      right:0;
+      top:100%;
+      padding: 0 18px 120px;
+      transform: translateY(0);
+      will-change: transform;
+    }
+
+    .message{
+      font-size: clamp(18px, 5.5vw, 30px);
+      line-height: 1.35;
+      letter-spacing: .2px;
+      text-shadow: 0 2px 18px rgba(0,0,0,.45);
+    }
+    .message p{ margin: 0 0 14px; }
+
+    @media (min-width: 900px){
+      .screen{ padding: 24px; gap:16px; }
+      header{ flex-direction:row; align-items:center; justify-content:space-between; }
+      h1{ font-size: 24px; }
+      .controls{ justify-content:flex-end; }
+    }
+
+    audio#bgAudio{
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      left: -9999px;
+      top: -9999px;
+      opacity: 0;
+    }
+
+    /* POPUPS (password + phones) */
+    .lockOverlay{
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.65);
+      z-index: 9999;
+      padding: 20px;
+    }
+    .lockCard{
+      width: min(520px, 100%);
+      background: rgba(20,20,20,.92);
+      color: #fff;
+      border-radius: 16px;
+      padding: 22px 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      text-align: center;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .lockTitle{ font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+    .lockText{ font-size: 15px; opacity: .9; margin-bottom: 14px; }
+    .lockRow{
+      display: flex; gap: 10px;
+      align-items: center; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .lockInput{
+      width: 240px; max-width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      outline: none;
+    }
+    .lockInput:focus{ border-color: rgba(255,255,255,.35); }
+    .lockBtn{
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 0;
+      background: #ffffff;
+      color: #111;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .lockBtn:hover{ opacity: .92; }
+    .lockError{ margin-top: 10px; min-height: 18px; color: #ffb3b3; font-weight: 700; }
+    .lockSub{ margin-top: 10px; opacity: .85; }
+	 .spacer{ height: 180px; }
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+
+  <div class="screen">
+    <header>
+      <div>
+        <h1><span style="color:var(--accent);font-weight:800;">A verdade</span>! ✨</h1>
+        <div class="sub">
+          <span class="pill" id="status" style="display:none">⏸️</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="toggleBtn">
+          <span id="toggleIcon">▶</span>
+          <span id="toggleText">Play</span>
+        </button>
+
+        <button class="btn" id="restartBtn">🔁 Ler de novo</button>
+
+        <div class="range" title="Velocidade">
+          Velocidade
+          <input id="speed" type="range" min="10" max="140" value="13" />
+          <span id="speedVal">13</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="teleprompter" id="teleprompter" aria-label="Teleponto">
+      <!-- POPUP 1: PASSWORD -->
+      <div class="lockOverlay" id="lockOverlay" aria-label="Proteção por palavra-passe">
+        <div class="lockCard" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+          <div class="lockTitle" id="lockTitle">Paxs:</div>
+          <div class="lockText"></div>
+
+          <div class="lockRow">
+            <input id="lockInput" class="lockInput" type="password" autocomplete="off" placeholder="Password" />
+            <button id="lockBtn" class="lockBtn" type="button">Entrar</button>
+          </div>
+
+          <div id="lockError" class="lockError" role="alert" aria-live="polite"></div>
+          <div class="lockSub"></div>
+        </div>
+      </div>
+
+      <!-- POPUP 2: PHONES -->
+      <div class="lockOverlay" id="phonesOverlay" aria-label="Aviso de fones" style="display:none;">
+        <div class="lockCard" role="dialog" aria-modal="true" aria-labelledby="phonesTitle">
+          <div class="lockTitle" id="phonesTitle">🎧 Precisas de ouvir</div>
+          <div class="lockText">Se estiveres sozinha por favor ouve. </div>
+          <div class="lockText">clica em OK e depois Play</div>
+          <div class="lockRow">
+            <button id="phonesOkBtn" class="lockBtn" type="button">OK</button>
+          </div>
+          <div class="lockSub">Guarda isto só para ti. </div>
+        </div>
+      </div>
+
+      <!-- ÁUDIO LOCAL EM LOOP -->
+      <audio id="bgAudio" preload="auto" >
+        <source src="verdade.mp3" type="audio/mpeg" />
+      </audio>
+
+      <div class="fadeTop"></div>
+      <div class="fadeBottom"></div>
+
+      <div class="viewport">
+        <div class="scrollArea" id="scrollArea">
+          <div class="message" id="message">
+		   <div class="spacer"></div>
+                <p>Sempre guardei para mim tudo o que te quis dizer
+</p><p>E agora basta de esconder.
+</p><p>Há dias em que consigo manter a distância,
+</p><p>Faço-me de forte, e finjo que o que sinto não tem importância.
+</p><p>E há dias em que sem aviso,
+</p><p>O corpo reage antes de eu dar por isso.
+</p><p>Longe de ti na América do Sul,
+</p><p>Com o chão a refletir o céu azul.
+</p><p>Vi o mundo, mas faltavas tu,
+</p><p>Para dar cor a este sentimento cru.
+</p><p>Pensar em ti é a minha adrenalina,
+</p><p>Hoje a mente só te chama, Catarina.
+</p><p>O brilho à tua volta despertou o querer,
+</p><p>Pensamento quente e difícil de conter.
+</p><p>Tento resistir a esta tentação,
+</p><p>Por mais que eu queira, tenho de dizer que não.
+</p><p>Entre nós, não pode haver uma relação 
+</p><p>Não passa mais do que uma forte atração.
+</p><p>Queria que te visses através dos meus olhos,
+</p><p>Pra veres o que vejo quando te olho.
+</p><p>Pra perceberes o encanto a acontecer,
+</p><p>Quando estás à minha frente mesmo sem nada dizer.
+</p><p>Há algo em ti que me puxa pra perto,
+</p><p>Que abranda o mundo, deixa-me o coração aberto
+</p><p>Faz cada momento querer durar,
+</p><p>Como se o tempo aprendesse a parar.
+</p><p>Não me quero esconder e quero assumir
+</p><p>O que está dentro de mim, o que estou a sentir...
+</p><p>Há uma voz em mim
+</p><p>Que só me pede que resista
+</p><p>Enumero os contras, faço uma lista
+</p><p>Tenho tudo a desfavor,
+</p><p>Mas dúvido que desista!
+</p><p>Digo-me “não devias”, e "pára agora”,
+</p><p>Mas tudo em mim te quer a toda hora.
+</p><p>Se é errado sentir, vou deixar arder.
+</p><p>Porque há vontades que nascem para acontecer.
+</p><p>Não te escrevo pra pedir nada de ti,
+</p><p>Nem pra mudar o que existe aqui.
+</p><p>Escrevo porque tudo isto é real,
+</p><p>Porque o que sinto por ti, nunca foi superficial.
+</p><p>Como te disse um dia, "acordava todos os dias com o teu sorriso".
+</p><p>Para estar completo, era só o que era preciso.
+</p><p>Penso tanto no que não aconteceu,
+</p><p>Queria tanto que o teu sorriso fosse o meu.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ----- ELEMENTOS
+    const teleprompter = document.getElementById("teleprompter");
+    const scrollArea = document.getElementById("scrollArea");
+    const messageEl = document.getElementById("message");
+
+    const toggleBtn = document.getElementById("toggleBtn");
+    const toggleIcon = document.getElementById("toggleIcon");
+    const toggleText = document.getElementById("toggleText");
+    const restartBtn = document.getElementById("restartBtn");
+    const speed = document.getElementById("speed");
+    const speedVal = document.getElementById("speedVal");
+    const statusPill = document.getElementById("status");
+
+    const audio = document.getElementById("bgAudio");
+
+    // ----- POPUP 1 (PASSWORD)
+    const PASS = "pralt005";
+    const lockOverlay = document.getElementById("lockOverlay");
+    const lockInput = document.getElementById("lockInput");
+    const lockBtn = document.getElementById("lockBtn");
+    const lockError = document.getElementById("lockError");
+
+    // ----- POPUP 2 (PHONES)
+    const phonesOverlay = document.getElementById("phonesOverlay");
+    const phonesOkBtn = document.getElementById("phonesOkBtn");
+
+    // ----- ESTADO
+    let running = false;
+    let startedOnce = false;
+    let unlocked = false;
+    let readyPhones = false;
+    let lastTs = null;
+    let velocity = Number(speed.value);
+
+    function safePlayAudio(){
+      if (!audio) return;
+      audio.play().catch(() => {});
+    }
+    function safePauseAudio(){
+      if (!audio) return;
+      audio.pause();
+    }
+
+    function setStatus() {
+      const icon = running ? "⏸️" : "▶";
+      statusPill.textContent = icon;
+      toggleIcon.textContent = icon;
+      toggleText.textContent = running ? "Pausa" : "Play";
+    }
+
+    function resetPosition() {
+      scrollArea.style.transform = "translateY(0px)";
+      scrollArea._y = 0;
+      lastTs = null;
+      measure();
+    }
+
+    function measure() {
+      const teleH = teleprompter.getBoundingClientRect().height;
+      const msgH = messageEl.offsetHeight;
+      scrollArea._totalTravel = teleH + msgH + 120;
+    }
+
+    function canStart(){
+      return unlocked && readyPhones;
+    }
+
+    function startExperience(){
+      if (!canStart()) return;
+
+      if (!startedOnce) {
+        startedOnce = true;
+        running = true;
+        setStatus();
+        safePlayAudio();
+        return;
+      }
+
+      running = !running;
+      setStatus();
+      if (running) safePlayAudio();
+      else safePauseAudio();
+    }
+
+    function tick(ts) {
+      if (!lastTs) lastTs = ts;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+
+      if (running) {
+        scrollArea._y = (scrollArea._y ?? 0) - (velocity * dt);
+        scrollArea.style.transform = `translateY(${scrollArea._y}px)`;
+
+        if (Math.abs(scrollArea._y) > (scrollArea._totalTravel ?? 2000)) {
+          scrollArea._y = 0;
+          lastTs = null;
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    // ----- PASSWORD
+    function unlock(){
+      const typed = (lockInput.value || "").trim();
+      if (typed === PASS) {
+        unlocked = true;
+        lockOverlay.style.display = "none";
+        lockError.textContent = "";
+        lockInput.value = "";
+
+        // mostra popup dos phones
+        phonesOverlay.style.display = "flex";
+        setTimeout(() => phonesOkBtn && phonesOkBtn.focus(), 50);
+      } else {
+        lockError.textContent = "Password errada 😅";
+        lockInput.focus();
+        if (lockInput.select) lockInput.select();
+      }
+    }
+
+    lockBtn.addEventListener("click", unlock);
+    lockInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") unlock();
+    });
+
+    // ----- PHONES OK -> ARRANCA
+    phonesOkBtn.addEventListener("click", () => {
+  readyPhones = true;
+  phonesOverlay.style.display = "none";
+
+  // arrancar mesmo: reset + running + áudio
+  resetPosition();
+  startedOnce = true;
+  running = true;
+  setStatus();
+  safePlayAudio();
+});
+
+
+    // ----- CONTROLOS
+    speed.addEventListener("input", () => {
+      velocity = Number(speed.value);
+      speedVal.textContent = velocity;
+    });
+
+    toggleBtn.addEventListener("click", () => startExperience());
+
+    restartBtn.addEventListener("click", () => {
+      resetPosition();
+      if (!canStart()) return;
+
+      if (audio) audio.currentTime = 0;
+      if (running) safePlayAudio();
+    });
+
+    teleprompter.addEventListener("click", () => startExperience());
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && startedOnce && running) safePlayAudio();
+    });
+    window.addEventListener("focus", () => {
+      if (startedOnce && running) safePlayAudio();
+    });
+
+    window.addEventListener("resize", () => measure());
+
+    // ----- INIT
+    speedVal.textContent = speed.value;
+    setStatus();
+    measure();
+    requestAnimationFrame(tick);
+    setTimeout(() => lockInput && lockInput.focus(), 100);
+  </script>
+</body>
+</html>

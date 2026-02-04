@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>✨ Karaoke</title>
+
+  <style>
+    :root{
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --accent: rgba(255, 210, 120, .98);
+    }
+
+    *{ box-sizing:border-box }
+    html, body{ height:100% }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: url("images/mexi.jpg") center / cover no-repeat fixed;
+      overflow:hidden;
+      position: relative;
+    }
+
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(900px 600px at 20% 20%, rgba(43,47,102,.45) 0%, transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(90,47,93,.35) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(11,16,32,.70), rgba(27,31,58,.55));
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .screen, header, .stage{ position: relative; z-index: 1; }
+
+    .stars{
+      position:fixed; inset:0;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.35) 40%, transparent 42%),
+        radial-gradient(1.5px 1.5px at 140px 90px, rgba(255,255,255,.25) 40%, transparent 42%),
+        radial-gradient(1.8px 1.8px at 320px 150px, rgba(255,255,255,.2) 40%, transparent 42%),
+        radial-gradient(1.2px 1.2px at 520px 60px, rgba(255,255,255,.18) 40%, transparent 42%),
+        radial-gradient(1.6px 1.6px at 760px 180px, rgba(255,255,255,.22) 40%, transparent 42%),
+        radial-gradient(1.2px 1.2px at 940px 110px, rgba(255,255,255,.18) 40%, transparent 42%);
+      background-size: 1000px 220px;
+      opacity:.55;
+      animation: drift 16s linear infinite;
+      pointer-events:none;
+      filter: blur(.15px);
+      z-index: 0;
+    }
+    @keyframes drift { from {transform:translateY(0)} to {transform:translateY(220px)} }
+
+    .screen{
+      height: 100dvh;
+      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    header{
+      flex: 0 0 auto;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    h1{ margin:0; font-size: 18px; line-height: 1.2; letter-spacing:.2px; }
+
+    .sub{
+      margin-top:6px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .pill{
+      padding:6px 10px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+    }
+
+    .controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      color:var(--text);
+      padding:12px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size: 14px;
+      min-height:44px;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .range{
+      flex:1;
+      min-width: 220px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      border-radius:14px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:44px;
+    }
+    input[type="range"]{ width:100%; accent-color: rgba(255,255,255,.85); }
+
+    .stage{
+      position:relative;
+      flex: 1 1 auto;
+      min-height:0;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:22px;
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset;
+      touch-action: manipulation;
+    }
+
+    /* ---- KARAOKE: 1 VERSO AO CENTRO ---- */
+    .karaokeScreen{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:40px;
+    }
+
+    
+    #karaokeLine{
+  font-size: clamp(26px, 7vw, 52px);
+  font-weight: 900;
+  letter-spacing: .2px;
+
+  color: #ffffff; /* letras brancas */
+
+  -webkit-text-stroke: 2px #222222; /* stroke amarelo */
+  text-stroke: 2px #ffd278;
+
+  text-shadow:
+    0 0 14px rgba(255,210,120,.5),
+    0 4px 22px rgba(0,0,0,.6);
+
+  opacity:0;
+  transform: translateY(6px) scale(.98);
+  transition: .35s ease;
+  line-height: 1.25;
+  max-width: 980px;
+}
+
+#karaokeLine.show{
+  opacity:1;
+  transform: translateY(0) scale(1);
+}
+
+
+    audio#bgAudio{
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      left: -9999px;
+      top: -9999px;
+      opacity: 0;
+    }
+
+    /* POPUPS */
+    .lockOverlay{
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.65);
+      z-index: 9999;
+      padding: 20px;
+    }
+    .lockCard{
+      width: min(520px, 100%);
+      background: rgba(20,20,20,.92);
+      color: #fff;
+      border-radius: 16px;
+      padding: 22px 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      text-align: center;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .lockTitle{ font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+    .lockText{ font-size: 15px; opacity: .9; margin-bottom: 14px; }
+    .lockRow{
+      display: flex; gap: 10px;
+      align-items: center; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .lockInput{
+      width: 240px; max-width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      outline: none;
+    }
+    .lockInput:focus{ border-color: rgba(255,255,255,.35); }
+    .lockBtn{
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 0;
+      background: #ffffff;
+      color: #111;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .lockBtn:hover{ opacity: .92; }
+    .lockError{ margin-top: 10px; min-height: 18px; color: #ffb3b3; font-weight: 700; }
+    .lockSub{ margin-top: 10px; opacity: .85; }
+
+    @media (min-width: 900px){
+      .screen{ padding: 24px; gap:16px; }
+      header{ flex-direction:row; align-items:center; justify-content:space-between; }
+      h1{ font-size: 24px; }
+      .controls{ justify-content:flex-end; }
+      .karaokeScreen{ padding: 56px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+
+  <div class="screen">
+    <header>
+      <div>
+        <h1><span style="color:var(--accent);font-weight:900;">A verdade</span>! ✨</h1>
+        <div class="sub">
+          <span class="pill" id="status">▶</span>
+          <span class="pill" id="timePill">00:00</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="toggleBtn">
+          <span id="toggleIcon">▶</span>
+          <span id="toggleText">Play</span>
+        </button>
+
+        <button class="btn" id="restartBtn" style="display: none">🔁 Recomeçar</button>
+
+        <div class="range" title="Adiantar/atrasar a letra sem mexer em todos os tempos" style="display: none">
+          Offset
+          <input id="offset" type="range" min="-1500" max="1500" value="0" />
+          <span id="offsetVal">0ms</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="stage" id="stage" aria-label="Karaoke">
+      <!-- POPUP 1: PASSWORD -->
+      <div class="lockOverlay" id="lockOverlay" aria-label="Proteção por palavra-passe">
+        <div class="lockCard" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+          <div class="lockTitle" id="lockTitle">Paxs:</div>
+          <div class="lockText"></div>
+
+          <div class="lockRow">
+            <input id="lockInput" class="lockInput" type="password" autocomplete="off" placeholder="Password" />
+            <button id="lockBtn" class="lockBtn" type="button">Entrar</button>
+          </div>
+
+          <div id="lockError" class="lockError" role="alert" aria-live="polite"></div>
+          <div class="lockSub"></div>
+        </div>
+      </div>
+
+      <!-- POPUP 2: PHONES -->
+      <div class="lockOverlay" id="phonesOverlay" aria-label="Aviso de fones" style="display:none;">
+        <div class="lockCard" role="dialog" aria-modal="true" aria-labelledby="phonesTitle">
+          <div class="lockTitle" id="phonesTitle">🎧 Precisas de ouvir</div>
+          <div class="lockText">Se estiveres sozinha por favor ouve.</div>
+          <div class="lockText">Clica em OK</div>
+          <div class="lockRow">
+            <button id="phonesOkBtn" class="lockBtn" type="button">OK</button>
+          </div>
+          <div class="lockSub">Guarda isto só para ti.</div>
+        </div>
+      </div>
+
+      <!-- ÁUDIO -->
+      <audio id="bgAudio" preload="auto">
+        <source src="verdade.mp3" type="audio/mpeg" />
+      </audio>
+
+      <!-- KARAOKE CENTER -->
+      <div class="karaokeScreen">
+        <div id="karaokeLine">Preparado…</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ----- ELEMENTOS
+    const toggleBtn = document.getElementById("toggleBtn");
+    const toggleIcon = document.getElementById("toggleIcon");
+    const toggleText = document.getElementById("toggleText");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const statusPill = document.getElementById("status");
+    const timePill = document.getElementById("timePill");
+
+    const audio = document.getElementById("bgAudio");
+    const lineEl = document.getElementById("karaokeLine");
+
+    // ----- POPUP 1 (PASSWORD)
+    const PASS = "pralt005";
+    const lockOverlay = document.getElementById("lockOverlay");
+    const lockInput = document.getElementById("lockInput");
+    const lockBtn = document.getElementById("lockBtn");
+    const lockError = document.getElementById("lockError");
+
+    // ----- POPUP 2 (PHONES)
+    const phonesOverlay = document.getElementById("phonesOverlay");
+    const phonesOkBtn = document.getElementById("phonesOkBtn");
+
+    // ----- OFFSET (afinar sync)
+    const offset = document.getElementById("offset");
+    const offsetVal = document.getElementById("offsetVal");
+    let offsetMs = Number(offset.value);
+
+    // ----- ESTADO
+    let unlocked = false;
+    let readyPhones = false;
+
+    // ----- LETRA (mete aqui os tempos reais do teu mp3)
+    const lyrics = [
+  [18.6,  "Sempre guardei para mim tudo o que te quis dizer"],
+  [24.5,  "E agora basta de esconder."],
+  [33.0,  "Há dias em que consigo manter a distância,"],
+  [37.5,  "Faço-me de forte, e finjo que o que sinto não tem importância."],
+  [47.7,  "E há dias em que sem aviso,"],
+  [51.0,  "O corpo reage antes de eu dar por isso."],
+  [55.0,  "Longe de ti na América do Sul,"],
+  [58.5,  "Com o chão a refletir o céu azul."],
+  [63.2,  "Vi o mundo, mas faltavas tu,"],
+  [67.3,  "Para dar cor a este sentimento cru."],
+  [72.0,  "Pensar em ti é a minha adrenalina,"],
+  [75.5,  "Hoje a mente só te chama, Catarina."],
+  [79.0,  "O brilho à tua volta despertou o querer,"],
+  [83.0,  "Pensamento quente e difícil de conter."],
+  [94.1,  "Tento resistir a esta tentação,"],
+  [98.0,  "Por mais que eu queira, tenho de dizer que não."],
+  [101.5, "Entre nós, não pode haver uma relação"],
+  [105.5, "Não passa mais do que uma forte atração."],
+  [109.0, "Queria que te visses através dos meus olhos,"],
+  [113.3, "Pra veres o que vejo quando te olho."],
+  [117.2, "Pra perceberes o encanto a acontecer,"],
+  [120.0, "Quando estás à minha frente mesmo sem nada dizer."],
+  [123.6, "Há algo em ti que me puxa pra perto,"],
+  [127.5, "Que abranda o mundo, deixa-me o coração aberto"],
+  [131.2, "Faz cada momento querer durar,"],
+  [135.0, "Como se o tempo aprendesse a parar."],
+  [139.0, "Não me quero esconder e quero assumir"],
+  [142.5, "O que está dentro de mim, o que estou a sentir"],
+  [153.0, "Há uma voz em mim"],
+  [156.0, "Que só me pede que resista"],
+  [158.3, "Enumero os contras, faço uma lista"],
+  [162.8, "Tenho tudo a desfavor,"],
+  [166.5, "Mas dúvido que desista!"],
+  [169.5, "Digo-me “não devias”, e \"pára agora”,"],
+  [173.5, "Mas tudo em mim te quer a toda hora."],
+  [176.8, "Se é errado sentir, vou deixar arder"],
+  [180.5, "Porque há vontades que nascem para acontecer."],
+  [184.4, "Não te escrevo pra pedir nada de ti,"],
+  [188.0, "Nem pra mudar o que existe aqui."],
+  [191.4, "Escrevo porque tudo isto é real,"],
+  [194.8, "Porque o que sinto por ti, nunca foi superficial."],
+  [199.0, "Como te disse um dia:"],
+  [201.0, "\"acordava todos os dias com o teu sorriso\"."],
+  [205.0, "Para estar completo, era só o que era preciso."],
+  [209.0, "Penso tanto no que não aconteceu..."],
+  [212.4, "Queria tanto que o teu sorriso fosse o meu."]
+];
+
+
+    function canStart(){
+      return unlocked && readyPhones;
+    }
+
+    function safePlayAudio(){
+      audio.play().catch(() => {});
+    }
+    function safePauseAudio(){
+      audio.pause();
+    }
+
+    function setStatus() {
+      const running = !audio.paused;
+      const icon = running ? "⏸️" : "▶";
+      statusPill.textContent = icon;
+      toggleIcon.textContent = icon;
+      toggleText.textContent = running ? "Pausa" : "Play";
+    }
+
+    function formatTime(sec){
+      sec = Math.max(0, sec|0);
+      const m = String(Math.floor(sec/60)).padStart(2, "0");
+      const s = String(sec%60).padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    // ----- ATUALIZA VERSO (somente um)
+    let current = -1;
+
+    function setLine(text){
+      lineEl.classList.remove("show");
+      // pequeno delay para a transição ficar bonita
+      setTimeout(() => {
+        lineEl.textContent = text;
+        lineEl.classList.add("show");
+      }, 70);
+    }
+
+    function karaokeTick(){
+      timePill.textContent = formatTime(audio.currentTime);
+
+      const t = audio.currentTime + (offsetMs / 1000);
+
+      // encontra o último verso cujo tempo <= t
+      let idx = -1;
+      for (let i = lyrics.length - 1; i >= 0; i--) {
+        if (t >= lyrics[i][0]) { idx = i; break; }
+      }
+
+      if (idx !== -1 && idx !== current){
+        current = idx;
+        setLine(lyrics[idx][1]);
+      }
+
+      requestAnimationFrame(karaokeTick);
+    }
+
+    // ----- PASSWORD
+    function unlock(){
+      const typed = (lockInput.value || "").trim();
+      if (typed === PASS) {
+        unlocked = true;
+        lockOverlay.style.display = "none";
+        lockError.textContent = "";
+        lockInput.value = "";
+
+        phonesOverlay.style.display = "flex";
+        setTimeout(() => phonesOkBtn && phonesOkBtn.focus(), 50);
+      } else {
+        lockError.textContent = "Password errada 😅";
+        lockInput.focus();
+        if (lockInput.select) lockInput.select();
+      }
+    }
+
+    lockBtn.addEventListener("click", unlock);
+    lockInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") unlock();
+    });
+
+    // ----- PHONES OK (primeiro gesto do user -> permite play)
+    phonesOkBtn.addEventListener("click", () => {
+      readyPhones = true;
+      phonesOverlay.style.display = "none";
+
+      audio.currentTime = 0;
+      current = -1;
+      setLine(" ");
+      safePlayAudio();
+      setStatus();
+    });
+
+    // ----- CONTROLOS
+    offset.addEventListener("input", () => {
+      offsetMs = Number(offset.value);
+      offsetVal.textContent = `${offsetMs}ms`;
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      if (!canStart()) return;
+      if (audio.paused) safePlayAudio();
+      else safePauseAudio();
+      setStatus();
+    });
+
+    restartBtn.addEventListener("click", () => {
+      if (!canStart()) return;
+      audio.currentTime = 0;
+      current = -1;
+      safePlayAudio();
+      setStatus();
+    });
+
+    // clique no palco também play/pause (sem apanhar cliques dos popups)
+    document.getElementById("stage").addEventListener("click", (e) => {
+      if (!canStart()) return;
+      if (e.target.closest(".lockOverlay")) return;
+      if (audio.paused) safePlayAudio();
+      else safePauseAudio();
+      setStatus();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && canStart() && !audio.paused) safePlayAudio();
+    });
+    window.addEventListener("focus", () => {
+      if (canStart() && !audio.paused) safePlayAudio();
+    });
+
+    // ----- INIT
+    offsetVal.textContent = `${offsetMs}ms`;
+    setStatus();
+    requestAnimationFrame(karaokeTick);
+    setTimeout(() => lockInput && lockInput.focus(), 100);
+  </script>
+</body>
+</html>
