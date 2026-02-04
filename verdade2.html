@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>✨ Karaoke</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -17,7 +20,7 @@
 
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
       background: url("images/mexi.jpg") center / cover no-repeat fixed;
       overflow:hidden;
@@ -156,26 +159,26 @@
     }
 
     
-    #karaokeLine{
-  font-size: clamp(26px, 7vw, 52px);
-  font-weight: 900;
-  letter-spacing: .2px;
+  #karaokeLine{
+  font-family: 'Poppins', sans-serif;
+font-size: clamp(24px, 6vw, 48px);
+  font-weight: 800;
+  letter-spacing: .4px;
 
-  color: #ffffff; /* letras brancas */
+  color: #fff;
 
-  -webkit-text-stroke: 2px #222222; /* stroke amarelo */
-  text-stroke: 2px #ffd278;
+  /* contorno mais fino e suave */
+  -webkit-text-stroke: 1.5px rgba(0,0,0,.85);
 
+  /* sombra cinematográfica em vez de bloco duro */
   text-shadow:
-    0 0 14px rgba(255,210,120,.5),
-    0 4px 22px rgba(0,0,0,.6);
+    0 4px 12px rgba(0,0,0,.6),
+    0 0 18px rgba(255,210,120,.18);
 
-  opacity:0;
-  transform: translateY(6px) scale(.98);
-  transition: .35s ease;
-  line-height: 1.25;
-  max-width: 980px;
+  line-height: 1.15;
 }
+
+
 
 #karaokeLine.show{
   opacity:1;
@@ -357,6 +360,7 @@
 
     // ----- LETRA (mete aqui os tempos reais do teu mp3)
     const lyrics = [
+  [0.35,  "Sempre guardei para mim tudo o que te quis dizer"],
   [18.6,  "Sempre guardei para mim tudo o que te quis dizer"],
   [24.5,  "E agora basta de esconder."],
   [33.0,  "Há dias em que consigo manter a distância,"],
