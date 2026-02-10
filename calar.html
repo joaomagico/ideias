@@ -174,7 +174,7 @@
     }
     .message p{ margin: 0 0 14px; }
 
-    .message p::first-letter{
+    ...message p::first-letter{
   color: var(--accent);   /* ou qualquer cor fixa */
   font-weight: 900;
   font-size: 1.18em;
@@ -182,14 +182,14 @@
   text-shadow: 0 2px 14px rgba(0,0,0,.55);
 }
 
-    .message p:nth-child(8n+1)::first-letter{ color:#ff6b6b; }
-    .message p:nth-child(8n+2)::first-letter{ color:#ff6b6b; }
-    .message p:nth-child(8n+3)::first-letter{ color:#ff6b6b; }
-    .message p:nth-child(8n+4)::first-letter{ color:#ff6b6b; }
-    .message p:nth-child(8n+5)::first-letter{ color:#ff6b6b; }
-    .message p:nth-child(8n+6)::first-letter{ color:#ff6b6b; }
-    .message p:nth-child(8n+7)::first-letter{ color:#ff6b6b; }
-    .message p:nth-child(8n+8)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+1)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+2)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+3)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+4)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+5)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+6)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+7)::first-letter{ color:#ff6b6b; }
+    ...message p:nth-child(8n+8)::first-letter{ color:#ff6b6b; }
 
     @media (min-width: 900px){
       .screen{ padding: 24px; gap:16px; }
@@ -573,4 +573,5 @@
 
 </body>
 </html>
+
 
