@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tudo</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">
+          <strong>Tudo o que te escrevi</strong>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="index.html">Capa</a>
+        <a href="tracks.html">Músicas</a>
+        <a href="player.html">Player</a>
+      </nav>
+    </div>
+
+    <div class="split">
+      <div class="card pad">
+        <div class="h1" style="font-size:28px; margin-bottom:6px" id="trackTitle">A carregar…</div>
+        <div class="p" id="trackArtist" style="margin-bottom:10px"></div>
+
+        <div class="actions" style="margin-top:8px">
+          <button class="btn" id="prevBtn">◀ Anterior</button>
+          <button class="btn" id="nextBtn">Próxima ▶</button>
+          <a class="btn ghost" href="tracks.html">Voltar à lista</a>
+        </div>
+
+        <audio id="audio" controls preload="metadata"></audio>
+
+      </div>
+
+      <div class="card" style="padding:16px 18px 18px">
+        <div class="sectionTitle" style="padding:0 0 12px; border-bottom:none">
+          <h2>Letras</h2>
+          <div class="hint">l</div>
+        </div>
+        <div class="lyricsBox" style="height:520px">
+          <div class="fadeTop"></div>
+          <div class="fadeBottom"></div>
+          <div id="lyricsInner" class="lyricsInner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/tracks.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tudo</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">
+          <strong>Tudo o que te escrevi</strong>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="index.html">Capa</a>
+        <a href="tracks.html">Músicas</a>
+        <a href="player.html">Player</a>
+      </nav>
+    </div>
+
+    <div class="split">
+      <div class="card">
+        <div class="sectionTitle">
+          <h2>Lista de músicas</h2>
+          <div class="hint">Carrega em <span class="kbd">Tocar</span> para ouvir aqui</div>
+        </div>
+        <div id="tracklist" class="tracklist"></div>
+      </div>
+
+      <div class="card">
+        <div class="sectionTitle">
+          <h2>Agora a tocar</h2>
+          <div class="hint"></div>
+        </div>
+        <div class="now">
+          <div class="nowTop">
+            <div class="nowCover"><img id="nowCoverImg" src="assets/cover.jpg" alt="capa"/></div>
+            <div class="nowText">
+              <div id="nowTitle" class="tt">—</div>
+              <div id="nowArtist" class="aa">—</div>
+            </div>
+          </div>
+
+          <audio id="audio" controls preload="metadata"></audio>
+
+          <div class="lyricsBox">
+            <div class="fadeTop"></div>
+            <div class="fadeBottom"></div>
+            <div id="lyricsInner" class="lyricsInner"></div>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/tracks.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
