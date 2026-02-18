@@ -243,8 +243,60 @@ Ainda assim, eras tu que queria para mim... tenho toda a certeza.
   }
 ,
   {
-    id: "Despedida",
+    id: "Razões para te escolher",
     number: 6,
+    title: "Razões para te escolher",
+    file: "assets/audio/Razoes para te escolher.mp3",
+    durationHint: "4:10",
+	lyrics: `Razões para te escolher
+O teu brilho
+O teu cabelo
+O teu sorriso
+O teu carácter
+O teu olhar
+O teu bom humor
+O teu tom de voz
+O teu valor
+O teu ego
+O teu cuidado
+O teu eu.
+Mas ainda há mais...
+A tua simpatia
+A tua cortesia
+A tua honestidade
+A tua bondade
+A tua lealdade
+A tua vontade
+A tua intensidade
+A tua autenticidade
+A tua confiança
+A tua esperança
+A tua paciência
+A tua resiliência
+A tua inteligência
+A tua essência
+A tua maneira de seres mãe
+A tua força também 
+A tua doçura
+A tua postura
+A tua coragem
+
+Quando foi a última vez que alguém te escreveu assim ? 
+Quando vais dormir ficas a pensar em mim ?
+Quando foi a última vez que alguém te fez sentir assim ?
+Quando duvidares pensa que serás sempre a Mulher mais bela para mim. 
+Vejo tanta intensidade em nós e não uma coisa de momento.
+Senão era mais fácil para os dois superar este sentimento!
+
+Ontem tudo o que eu queria era subir ao teu corpo, passar no teu medo e esquecer o teu ego.
+Hoje tudo o que eu quero é subir ao teu ego, largar o teu medo e esquecer o teu corpo.
+
+Por força do que és e do que eu desejo,
+Oh Catarina. Tu és tudo o que eu vejo.`
+  },
+  {
+    id: "Despedida",
+    number: 7,
     title: "Despedida",
     file: "assets/audio/Despedida.mp3",
     durationHint: "5:57",
